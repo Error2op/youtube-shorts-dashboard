@@ -1,4 +1,5 @@
 'use client';
+// Build trigger: refreshed for Cloudflare deploy
 
 import { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
