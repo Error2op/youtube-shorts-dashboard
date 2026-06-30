@@ -1,31 +1,22 @@
-export const dynamic = 'force-dynamic';
-import { NextRequest, NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getDb, Env } from '../utils';
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const days = parseInt(searchParams.get('days') || '30', 10);
-
+export const onRequestGet: PagesFunction<Env> = async (context) => {
+  const days = parseInt(new URL(context.request.url).searchParams.get('days') || '30', 10);
   const today = new Date().toISOString().split('T')[0];
   const yesterdayDate = new Date();
   yesterdayDate.setDate(yesterdayDate.getDate() - 1);
   const yesterday = yesterdayDate.toISOString().split('T')[0];
 
   try {
-    const db = getDb();
-
-    // Get current period stats
+    const db = getDb(context.env);
     const since = new Date();
     since.setDate(since.getDate() - days);
     const sinceStr = since.toISOString().split('T')[0];
 
-    // Aggregate current period data
     const result = await db.execute({
       sql: `
         SELECT
-          c.channel_id,
-          c.name as channel_name,
-          c.subscriber_count,
+          c.channel_id, c.name as channel_name, c.subscriber_count,
           COALESCE(SUM(ca.views), 0) as total_views,
           COALESCE(SUM(ca.likes), 0) as total_likes,
           COALESCE(SUM(ca.comments), 0) as total_comments,
@@ -40,7 +31,6 @@ export async function GET(req: NextRequest) {
       args: [sinceStr],
     });
 
-    // Get today's and yesterday's daily_views
     const dvResult = await db.execute({
       sql: `SELECT channel_id, date, total_views FROM daily_views WHERE date IN (?, ?)`,
       args: [today, yesterday],
@@ -55,21 +45,13 @@ export async function GET(req: NextRequest) {
       if (row.date === yesterday) dailyMap[cid].yesterday = views;
     }
 
-    // Merge
     const rows = (result.rows as any[]).map((row: any) => {
-      const cid = row.channel_id as string;
-      const d = dailyMap[cid] || { today: 0, yesterday: 0 };
-      const gain = d.today - d.yesterday;
-      return {
-        ...row,
-        today_views: d.today,
-        yesterday_views: d.yesterday,
-        daily_gain: gain,
-      };
+      const d = dailyMap[row.channel_id as string] || { today: 0, yesterday: 0 };
+      return { ...row, today_views: d.today, yesterday_views: d.yesterday, daily_gain: d.today - d.yesterday };
     });
 
-    return NextResponse.json(rows);
+    return Response.json(rows);
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return Response.json({ error: err.message }, { status: 500 });
   }
-}
+};

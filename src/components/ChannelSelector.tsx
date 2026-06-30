@@ -17,7 +17,7 @@ export default function ChannelSelector({ selected, onSelect }: {
   useEffect(() => {
     fetch('/api/channels')
       .then(r => r.json())
-      .then(setChannels);
+      .then((data) => setChannels(data as Channel[]));
   }, []);
 
   return (

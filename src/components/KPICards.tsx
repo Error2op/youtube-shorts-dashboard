@@ -18,7 +18,7 @@ export default function KPICards({ channelId, days }: { channelId: string; days:
   useEffect(() => {
     fetch(`/api/kpi?days=${days}&channelId=${channelId}`)
       .then(r => r.json())
-      .then(setData)
+      .then((data: any) => setData(data))
       .finally(() => setLoading(false));
   }, [channelId, days]);
 

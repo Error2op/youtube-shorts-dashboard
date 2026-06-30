@@ -1,12 +1,9 @@
-export const dynamic = 'force-dynamic';
-import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getDb, Env } from '../utils';
 
-export async function GET() {
+export const onRequestGet: PagesFunction<Env> = async (context) => {
   try {
-    const db = getDb();
+    const db = getDb(context.env);
 
-    // Get all daily_views ordered by date
     const result = await db.execute({
       sql: `
         SELECT dv.date, dv.channel_id, c.name as channel_name, dv.total_views
@@ -16,7 +13,6 @@ export async function GET() {
       `,
     });
 
-    // Also get total per date
     const totals = await db.execute({
       sql: `
         SELECT date, SUM(total_views) as total_views
@@ -26,11 +22,8 @@ export async function GET() {
       `,
     });
 
-    return NextResponse.json({
-      channels: result.rows,
-      totals: totals.rows,
-    });
+    return Response.json({ channels: result.rows, totals: totals.rows });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return Response.json({ error: err.message }, { status: 500 });
   }
-}
+};

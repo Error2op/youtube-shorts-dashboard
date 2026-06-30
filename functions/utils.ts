@@ -1,10 +1,11 @@
-import { createClient, Client } from '@libsql/client';
+import { createClient } from '@libsql/client';
 
-export interface DBEnv {
+export interface Env {
   TURSO_DATABASE_URL: string;
   TURSO_AUTH_TOKEN: string;
+  YOUTUBE_API_KEY: string;
 }
 
-export function getDb(env: DBEnv): Client {
+export function getDb(env: Env) {
   return createClient({ url: env.TURSO_DATABASE_URL, authToken: env.TURSO_AUTH_TOKEN });
 }

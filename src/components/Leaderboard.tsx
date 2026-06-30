@@ -23,7 +23,7 @@ export default function Leaderboard({ days }: { days: number }) {
   useEffect(() => {
     fetch(`/api/leaderboard?days=${days}`)
       .then(r => r.json())
-      .then(setData);
+      .then((data: any) => setData(data));
   }, [days]);
 
   const fmt = (n: number) => {

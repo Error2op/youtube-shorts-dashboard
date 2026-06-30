@@ -5,3 +5,6 @@ node_modules/
 db_token.txt
 .db_token.local
 *.log
+out/
+scripts/lib-youtube.ts
+scripts/sync-lib.ts

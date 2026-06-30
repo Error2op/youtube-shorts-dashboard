@@ -27,7 +27,7 @@ export default function VideoGrid({ channelId, days, sortBy, onSortChange }: {
     setLoading(true);
     fetch(`/api/videos?days=${days}&channelId=${channelId}&sortBy=${sortBy}`)
       .then(r => r.json())
-      .then(setVideos)
+      .then((data: any) => setVideos(data))
       .finally(() => setLoading(false));
   }, [channelId, days, sortBy]);
 

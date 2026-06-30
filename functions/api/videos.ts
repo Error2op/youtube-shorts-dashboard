@@ -1,19 +1,17 @@
-export const dynamic = 'force-dynamic';
-import { NextRequest, NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getDb, Env } from '../utils';
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const channelId = searchParams.get('channelId') || '';
-  const sortBy = searchParams.get('sortBy') || 'views';
-  const days = parseInt(searchParams.get('days') || '30', 10);
-  
+export const onRequestGet: PagesFunction<Env> = async (context) => {
+  const url = new URL(context.request.url);
+  const channelId = url.searchParams.get('channelId') || '';
+  const sortBy = url.searchParams.get('sortBy') || 'views';
+  const days = parseInt(url.searchParams.get('days') || '30', 10);
+
   const since = new Date();
   since.setDate(since.getDate() - days);
   const sinceStr = since.toISOString().split('T')[0];
 
   try {
-    const db = getDb();
+    const db = getDb(context.env);
     let query = `SELECT * FROM content_analytics WHERE published_at >= ?`;
     const args: any[] = [sinceStr];
 
@@ -27,8 +25,8 @@ export async function GET(req: NextRequest) {
     query += ` ORDER BY ${orderBy} DESC LIMIT 50`;
 
     const result = await db.execute({ sql: query, args });
-    return NextResponse.json(result.rows);
+    return Response.json(result.rows);
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return Response.json({ error: err.message }, { status: 500 });
   }
-}
+};

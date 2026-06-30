@@ -5,7 +5,6 @@ import KPICards from '@/components/KPICards';
 import Leaderboard from '@/components/Leaderboard';
 import VideoGrid from '@/components/VideoGrid';
 import ChannelSelector from '@/components/ChannelSelector';
-import SyncButton from '@/components/SyncButton';
 import ThemeToggle from '@/components/ThemeToggle';
 import DailyViewsChart from '@/components/DailyViewsChart';
 
@@ -27,7 +26,6 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">YouTube Shorts Dashboard</h1>
           <div className="flex items-center gap-3">
-            <SyncButton />
             <ThemeToggle />
           </div>
         </div>

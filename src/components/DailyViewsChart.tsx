@@ -15,7 +15,7 @@ export default function DailyViewsChart() {
   useEffect(() => {
     fetch('/api/daily-views')
       .then(r => r.json())
-      .then(d => setData(d.totals || []));
+      .then((d: any) => setData(d.totals || []));
   }, []);
 
   if (data.length === 0) {
