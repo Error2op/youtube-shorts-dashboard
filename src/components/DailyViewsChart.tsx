@@ -55,7 +55,7 @@ export default function DailyViewsChart() {
               color: '#F9FAFB',
             }}
             labelFormatter={(v) => new Date(v).toLocaleDateString('en', { weekday: 'short', month: 'short', day: 'numeric' })}
-            formatter={(v: number) => [fmt(v) + ' views', 'Total']}
+            formatter={(value: any) => [fmt(value as number) + ' views', 'Total']}
           />
           <Area
             type="monotone"
