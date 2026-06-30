@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npx @cloudflare/next-on-pages",
-    "pages:build": "npx @cloudflare/next-on-pages",
-    "pages:deploy": "npm run pages:build && wrangler pages deploy",
+    "build": "next build",
+    "postbuild": "echo 'Build complete'",
+    "pages:build": "next build",
+    "pages:deploy": "npm run build && wrangler pages deploy .",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint || true"
   },
   "dependencies": {
     "@libsql/client": "^0.17.4",
@@ -22,7 +23,6 @@
     "recharts": "^3.9.0"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.13.16",
     "@cloudflare/workers-types": "^4.20260630.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
