@@ -4,3 +4,6 @@ compatibility_date = "2025-01-01"
 # Next.js output on Cloudflare Pages
 [build]
 command = "npm run build"
+
+[assets]
+directory = ".vercel/output/static"
